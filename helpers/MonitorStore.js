@@ -1,4 +1,7 @@
-
+/*
+* Monitor Store is responsible of tracking all   [monitor master instances]
+* Monitor Store tracks them by saving  their ids as [Key]
+*/
 
 class MonitorStore {
      collection = new Map();

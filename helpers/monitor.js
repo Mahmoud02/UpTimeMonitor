@@ -1,3 +1,10 @@
+/*
+* Monitor master is the wrapper of the [monitor]
+* Monitor master is the interface between app modules and the monitor object
+* Monitor master is responsible for trigger actions based on [Monitor] events
+* We identify Monitor Master be checkId[Unique identifier] to track it by using that identifier
+* Monitor Master save userId to use it later .
+*/
 const Monitor = require('ping-monitor');
 const Report = require('../models/report');
 const  reportRepo = require('../repos/reportRepo')
@@ -5,6 +12,12 @@ const sendNotification = require('../Notification/notification.queue').sendNotif
 const  userRepo = require('../repos/userRepo')
 
 class MonitorMaster {
+    /*
+    *Monitor is responsible for pulling and repeat the polling operation based on interval value
+    *Monitor is also responsible for generating Report based on pull result
+    *Monitor is also responsible for trigger event based on pulling result
+    ,these events is consumed and handled by MonitorMaster
+    */
     monitor ;
     constructor(_id,name, protocol,url,userId) {
         this._id = _id;
@@ -68,6 +81,12 @@ class MonitorMaster {
         console.log('errors')
         throw new Error(err)
     }
+    /*
+    * this function saves report data directly into database
+    * but Reports are updated based on interval times and interval time may be 5 minutes
+    * with more monitors running we will hit our main database many times for repeating the update action
+    * based on that,maybe we will need to use cache memory between our app and the main database
+     */
     updateReport(reportData){
         reportRepo.update(this._id,reportData)
     }
